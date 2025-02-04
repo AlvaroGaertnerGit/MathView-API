@@ -1,0 +1,40 @@
+# Archivos de entorno virtual
+venv/
+.env
+*.pyc
+__pycache__/
+
+# Archivos de base de datos y migraciones
+*.sqlite3
+db.sqlite3
+migrations/**/__pycache__/
+
+# Configuración de IDEs y editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de logs y dumps
+debug.log
+*.log
+
+# Archivos estáticos y medios generados
+staticfiles/
+media/
+
+# Dependencias
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Archivos de cobertura de pruebas
+.coverage
+htmlcov/
+
+# Archivos de Docker
+*.pid
+
+# Node.js (si usas frontend con npm/yarn)
+node_modules/
+yarn.lock
+package-lock.json
