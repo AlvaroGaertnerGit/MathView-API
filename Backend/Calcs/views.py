@@ -214,3 +214,52 @@ def calculateFourier(response):
         "phase": phase.tolist(),
     })
 
+
+@swagger_auto_schema(
+    methods=['get'],
+    manual_parameters=[
+        openapi.Parameter(
+            'function', 
+            openapi.IN_QUERY, 
+            description="integer for value d'", 
+            type=openapi.TYPE_INTEGER,
+            required=True
+        )
+    ]
+)
+@api_view(['GET'])
+def calculateMandelbrot(request):
+    """
+    Calcula el conjunto de Mandelbrot con una resolución estándar de 500x500 y devuelve el número de iteraciones por punto.
+    """
+    d = request.GET.get('d', '2')
+
+    try:
+        d = int(d)
+    except ValueError:
+        return JsonResponse({"error": "El parámetro d debe ser un número entero."}, status=400)
+
+    # Definir la resolución estándar
+    resolution = 500
+    x_min, x_max, y_min, y_max = -2, 2, -2, 2
+    x = np.linspace(x_min, x_max, resolution)
+    y = np.linspace(y_min, y_max, resolution)
+    X, Y = np.meshgrid(x, y)
+    C = X + 1j * Y  # Crear la cuadrícula en el plano complejo
+    Z = np.zeros_like(C, dtype=np.complex128)
+    iteration = np.zeros(C.shape, dtype=int)
+
+    max_iter = 100  # Número máximo de iteraciones
+
+    # Cálculo del conjunto de Mandelbrot
+    for i in range(max_iter):
+        mask = np.abs(Z) < 2  # Puntos que aún no han escapado
+        Z[mask] = Z[mask]**d + C[mask]
+        iteration[mask] += 1
+
+    return JsonResponse({
+        "x": x.tolist(),
+        "y": y.tolist(),
+        "iterations": iteration.tolist()
+    })
+
