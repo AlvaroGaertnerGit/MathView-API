@@ -17,6 +17,11 @@ from sympy import (
     trigamma, multigamma, dirichlet_eta, zeta, lerchphi, polylog
 )
 import sympy
+from sympy import symbols, I, lambdify
+from sympy.parsing.sympy_parser import parse_expr
+import numpy as np
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
 
 @swagger_auto_schema(
     methods=['get'],
@@ -34,45 +39,31 @@ import sympy
 # Create de views for calculate de complex function
 @api_view(['GET'])
 def calculateFunctionParam(request):
-
     input_function = request.GET.get('function')
-    
-    pattern = r"^\s*(?:([-+]?\d*\*?x\s*([-+]\s*\d*\*?y)?|[-+]?\d+))?\s*(?:\+\s*I\s*\(\s*([-+]?\d*\*?x\s*([-+]\s*\d*\*?y)?|[-+]?\d+)\s*\))?\s*$"
-    # if not re.match(pattern, input_function.replace(" ", "")):
-    #     return JsonResponse({"error": "Invalid function format. Expected (ax + by) + I(cx + dy), with possible omissions."}, status=400)
-    
 
     try:
-        x, y = symbols('x y')
+        x, y = symbols('x y', real=True)  # Fuerza a que x e y sean reales
         z = x + I * y
+
+        input_function = input_function.replace("i", "I")  # Corrige la notación imaginaria
         
-        input_function = input_function.replace("z", "(x + I*y)")
-        safe_locals = {  # Funciones seguras
-            'I': I, 'x': x, 'y': y, 'z': z,
-            'sin': sin, 'cos': cos, 'log': log, 'exp': exp, 'integrate': integrate,
-            'gamma': gamma, 'lowergamma': lowergamma, 'uppergamma': uppergamma,
-            'polygamma': polygamma, 'loggamma': loggamma, 'digamma': digamma,
-            'trigamma': trigamma, 'multigamma': multigamma,
-            'dirichlet_eta': dirichlet_eta, 'zeta': zeta, 'lerchphi': lerchphi, 'polylog': polylog
-        }
-        # Convertir la función en una expresión simbólica
+        # Parseamos la expresión evitando conversiones incorrectas
         print(input_function)
-        expr = sympify(input_function, locals=safe_locals)
-        # Asegurar que siempre tenemos una parte real e imaginaria
+        expr = parse_expr(input_function, local_dict={'I': I, 'x': x, 'y': y, 'z': z}, evaluate=False)
+        print(expr)
+        # Extraer la parte real e imaginaria
         real_part, imag_part = expr.as_real_imag()
-        # print(real_part)
 
         print(f"Parte real: {real_part}, Parte imaginaria: {imag_part}")
 
-        # Convertir a función evaluable
+        # Convertir a funciones evaluables
         f_real = lambdify((x, y), real_part, 'numpy')
         f_imag = lambdify((x, y), imag_part, 'numpy')
 
-    except (sympy.SympifyError, ValueError) as e:
+    except Exception as e:
         return JsonResponse({"error": f"Invalid mathematical expression: {str(e)}"}, status=400)
 
-
-        # Crear dominio
+    # Crear dominio
     domain_x = np.linspace(-2, 2, 100)
     domain_y = np.linspace(-2, 2, 100)
     X, Y = np.meshgrid(domain_x, domain_y)
@@ -84,10 +75,6 @@ def calculateFunctionParam(request):
 
         magnitude = np.abs(Z)
         phase = np.angle(Z)
-
-        # Reemplazar valores nulos
-        magnitude = np.nan_to_num(magnitude)
-        phase = np.nan_to_num(phase)
 
         return JsonResponse({
             "x": domain_x.tolist(),
