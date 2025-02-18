@@ -89,9 +89,8 @@ def calculateFunctionParam(request):
 # Create de views for calculate de complex function
 @api_view(['GET'])
 def calculateFunction(request):
-
     print(request)
-    input_function = request.GET.get('function', '32x + 89iy')
+    input_function = request.GET.get('function', '1x + 1iy')
 
 
     pattern = r"(-?\d+)x\s*\+\s*(-?\d+)iy"
@@ -108,7 +107,6 @@ def calculateFunction(request):
     y = np.linspace(-2, 2, 100)
     X, Y = np.meshgrid(x, y)
     Z = coefficients[0] * X + coefficients[1] * 1j *Y # Complex domain
-
     # Complex function
     try:
         f = Z
@@ -142,7 +140,7 @@ def calculateFunction(request):
 
 def calculateZeta(request):
     # Dominio del plano complejo
-    x = np.linspace(-4, 4, 100)  # Parte real
+    x = np.linspace(0, 1, 100)  # Parte real
     y = np.linspace(-30, 30, 100)  # Parte imaginaria
     X, Y = np.meshgrid(x, y)  # Crear una cuadrícula
     Z = X + 1j * Y  # Crear valores complejos a partir de x e y
@@ -152,7 +150,6 @@ def calculateZeta(request):
     except Exception as e:
         print(f"Error al calcular zeta: {e}")
         return JsonResponse({"error": str(e)}, status=400)
-
     # Calcular magnitud y fase
     magnitude = np.abs(f)
     phase = np.angle(f)
