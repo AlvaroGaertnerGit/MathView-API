@@ -1,8 +1,10 @@
+from urllib.parse import unquote
 from django.shortcuts import render
 from django.http import JsonResponse
 import numpy as np
 from mpmath import zeta
 from scipy.fft import fft, ifft # Complex function examples
+from scipy.special import expi
 import re
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -12,12 +14,11 @@ from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from sympy import (
-    im, sympify, lambdify, symbols, I, sin, cos, log, exp, integrate,
+    Integer, im, sympify, lambdify, symbols, I, sin, cos, log, exp, integrate,
     gamma, lowergamma, uppergamma, polygamma, loggamma, digamma,
-    trigamma, multigamma, dirichlet_eta, zeta, lerchphi, polylog
+    trigamma, multigamma, dirichlet_eta, zeta, lerchphi, polylog, summation, symbols, Sum, oo, mobius, li
 )
 import sympy
-from sympy import symbols, I, lambdify
 from sympy.parsing.sympy_parser import parse_expr
 import numpy as np
 from django.http import JsonResponse
@@ -40,16 +41,19 @@ from rest_framework.decorators import api_view
 @api_view(['GET'])
 def calculateFunctionParam(request):
     input_function = request.GET.get('function')
-
+    input_function = unquote(input_function)
+    print(input_function)
     try:
-        x, y = symbols('x y', real=True)  # Fuerza a que x e y sean reales
+        x, y= symbols('x y', real=True)  # Fuerza a que x e y sean reales
+        k = symbols('k', integer=True)
         z = x + I * y
 
+        local_dict = {'I': I, 'x': x, 'k': k,'y': y, 'z': z, 'exp': exp, 'sIn': sin, 'cos': cos, 'Integral': integrate, 'lI': li,'mobIus': mobius, 'Sum': Sum, 'oo':oo, 'Integer': Integer}
         input_function = input_function.replace("i", "I")  # Corrige la notación imaginaria
-        
+
         # Parseamos la expresión evitando conversiones incorrectas
         print(input_function)
-        expr = parse_expr(input_function, local_dict={'I': I, 'x': x, 'y': y, 'z': z}, evaluate=False)
+        expr = parse_expr(input_function, local_dict=local_dict, evaluate=False)
         print(expr)
         # Extraer la parte real e imaginaria
         real_part, imag_part = expr.as_real_imag()
