@@ -42,7 +42,6 @@ from rest_framework.decorators import api_view
 def calculateFunctionParam(request):
     input_function = request.GET.get('function')
     input_function = unquote(input_function)
-    print(input_function)
     try:
         x, y= symbols('x y', real=True)  # Fuerza a que x e y sean reales
         k = symbols('k', integer=True)
@@ -52,7 +51,6 @@ def calculateFunctionParam(request):
         input_function = input_function.replace("i", "I")  # Corrige la notación imaginaria
 
         # Parseamos la expresión evitando conversiones incorrectas
-        print(input_function)
         expr = parse_expr(input_function, local_dict=local_dict, evaluate=False)
         print(expr)
         # Extraer la parte real e imaginaria
@@ -63,6 +61,7 @@ def calculateFunctionParam(request):
         # Convertir a funciones evaluables
         f_real = lambdify((x, y), real_part, 'numpy')
         f_imag = lambdify((x, y), imag_part, 'numpy')
+
 
     except Exception as e:
         return JsonResponse({"error": f"Invalid mathematical expression: {str(e)}"}, status=400)
