@@ -16,7 +16,7 @@ from drf_yasg import openapi
 from sympy import (
     Integer, im, sympify, lambdify, symbols, I, sin, cos, log, exp, integrate,
     gamma, lowergamma, uppergamma, polygamma, loggamma, digamma,
-    trigamma, multigamma, dirichlet_eta, zeta, lerchphi, polylog, summation, symbols, Sum, oo, mobius, li
+    trigamma, multigamma, dirichlet_eta, zeta, lerchphi, polylog, summation, symbols, Sum, oo, mobius, li, pi
 )
 import sympy
 from sympy.parsing.sympy_parser import parse_expr
@@ -47,9 +47,10 @@ def calculateFunctionParam(request):
         k = symbols('k', integer=True)
         z = x + I * y
 
-        local_dict = {'I': I, 'x': x, 'k': k,'y': y, 'z': z, 'exp': exp, 'sIn': sin, 'cos': cos, 'Integral': integrate, 'lI': li,'mobIus': mobius, 'Sum': Sum, 'oo':oo, 'Integer': Integer}
+        local_dict = {'𝜋':pi, '·': '*','I': I,'𝑦': y,'𝑧':z, '𝑥': x,'x': x, 'k': k,'y': y, 'z': z, '𝑒': exp,'exp': exp, 'sIn': sin, 'cos': cos, 'Integral': integrate, 'lI': li,'mobIus': mobius, 'Sum': Sum, 'oo':oo, 'Integer': Integer}
         input_function = input_function.replace("i", "I")  # Corrige la notación imaginaria
-
+        input_function = input_function.replace("·", "*")  # Corrige la notación imaginaria
+        
         # Parseamos la expresión evitando conversiones incorrectas
         expr = parse_expr(input_function, local_dict=local_dict, evaluate=False)
         print(expr)
