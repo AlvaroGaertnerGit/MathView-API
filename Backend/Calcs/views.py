@@ -16,7 +16,7 @@ from drf_yasg import openapi
 from sympy import (
     Integer, im, sympify, lambdify, symbols, I, sin, cos, log, exp, integrate,
     gamma, lowergamma, uppergamma, polygamma, loggamma, digamma,
-    trigamma, multigamma, dirichlet_eta, zeta, lerchphi, polylog, summation, symbols, Sum, oo, mobius, li
+    trigamma, multigamma, dirichlet_eta, zeta, lerchphi, polylog, summation, symbols, Sum, oo, mobius, li, pi
 )
 import sympy
 from sympy.parsing.sympy_parser import parse_expr
@@ -47,10 +47,13 @@ def calculateFunctionParam(request):
         k = symbols('k', integer=True)
         z = x + I * y
 
-        local_dict = {'I': I, 'x': x, 'k': k,'y': y, 'z': z, 'exp': exp, 'sIn': sin, 'cos': cos, 'Integral': integrate, 'lI': li,'mobIus': mobius, 'Sum': Sum, 'oo':oo, 'Integer': Integer}
+        local_dict = {'pi':pi, '·': '*','I': I,'𝑦': y,'𝑧':z, '𝑥': x,'x': x, 'k': k,'y': y, 'z': z, '𝑒': exp,'exp': exp, 'sIn': sin, 'cos': cos, 'Integral': integrate, 'lI': li,'mobIus': mobius, 'Sum': Sum, 'oo':oo, 'Integer': Integer}
         input_function = input_function.replace("i", "I")  # Corrige la notación imaginaria
-
+        input_function = input_function.replace("𝜋", "pi")  # Corrige la notación imaginaria
+        input_function = input_function.replace("·", "*")  # Corrige la notación imaginaria
+        # input_function = input_function.replace("%F0%9D%9C%8B", "𝜋")  # Corrige la notación imaginaria
         # Parseamos la expresión evitando conversiones incorrectas
+        # import pdb; pdb.set_trace()
         expr = parse_expr(input_function, local_dict=local_dict, evaluate=False)
         print(expr)
         # Extraer la parte real e imaginaria
@@ -74,8 +77,16 @@ def calculateFunctionParam(request):
     try:
         Z_real = f_real(X, Y)
         Z_imag = f_imag(X, Y)
-        Z = Z_real + 1j * Z_imag  # Ensamblamos la función compleja
-
+        
+        # if np.allclose(Z_imag, 0, atol=1e-10):
+        #     return JsonResponse({
+        #         "x": domain_x.tolist(),
+        #         "y": domain_y.tolist(),
+        #         "magnitude": Z_real.tolist(),  # Se devuelve solo la parte real
+        #         "type": "real_only"
+        #     })
+        # else:
+        Z = Z_real + 1j * Z_imag
         magnitude = np.abs(Z)
         phase = np.angle(Z)
 
@@ -84,7 +95,9 @@ def calculateFunctionParam(request):
             "y": domain_y.tolist(),
             "magnitude": magnitude.tolist(),
             "phase": phase.tolist(),
+            "type": "complex"
         })
+
     except Exception as e:
         return JsonResponse({"error": f"Error evaluating function: {str(e)}"}, status=400)
 
