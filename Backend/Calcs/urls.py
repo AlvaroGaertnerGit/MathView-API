@@ -7,4 +7,5 @@ urlpatterns = [
     path('calculateZeta/', views.calculateZeta, name='calculateZeta'), 
     path('calculateFourier/', views.calculateFourier, name='calculateFourier'), 
     path('calculateMandelbrot/', views.calculateMandelbrot, name='calculateMandelbrot'), 
+    path('analyzeFunction/', views.analyzeFunction, name='analyze-function'), 
 ]

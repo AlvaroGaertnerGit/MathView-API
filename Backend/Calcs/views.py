@@ -2,7 +2,7 @@ from urllib.parse import unquote
 from django.shortcuts import render
 from django.http import JsonResponse
 import numpy as np
-from mpmath import zeta
+from mpmath import zeta, jtheta, pi, exp
 from scipy.fft import fft, ifft # Complex function examples
 from scipy.special import expi
 import re
@@ -14,7 +14,7 @@ from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from sympy import (
-    Integer, im, sympify, lambdify, symbols, I, sin, cos, log, exp, integrate,
+    Integer, im, sympify, lambdify, symbols, I, sin, cos, log, exp, integrate, symbols, solve, singularities, S,
     gamma, lowergamma, uppergamma, polygamma, loggamma, digamma,
     trigamma, multigamma, dirichlet_eta, zeta, lerchphi, polylog, summation, symbols, Sum, oo, mobius, li, pi
 )
@@ -101,7 +101,37 @@ def calculateFunctionParam(request):
     except Exception as e:
         return JsonResponse({"error": f"Error evaluating function: {str(e)}"}, status=400)
 
+@api_view(['GET'])
+def analyzeFunction(request):
+    expr_str = request.GET.get('expression')
+    if not expr_str:
+        return Response({'error': 'No expression provided'}, status=400)
 
+    z = symbols('z')
+    try:
+        expr = sympify(expr_str)
+        zeros = solve(expr, z)
+        poles = list(singularities(expr, z))
+        info = {
+            'expression': expr_str,
+            'zeros': [str(zero) for zero in zeros],
+            'poles': [str(pole) for pole in poles],
+            'notes': ''
+        }
+
+        if S(0) in zeros:
+            info['notes'] += "La función se anula en z=0. "
+
+        if poles:
+            if(len(poles)) > 1:
+                info['notes'] += f"Tiene {len(poles)} singularidades (polos). "
+            else:
+                info['notes'] += f"Tiene {len(poles)} singularidad (polos). "
+
+        return Response(info)
+
+    except Exception as e:
+        return Response({'error': f'No se pudo analizar la función: {str(e)}'}, status=400)
 # Create de views for calculate de complex function
 @api_view(['GET'])
 def calculateFunction(request):
