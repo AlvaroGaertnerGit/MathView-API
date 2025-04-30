@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*j_cmtr=-1--2hvm-9hq83vo#fa87++=5@r^2bm3^fbqit$k)3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['mathview-api.onrender.com']
+ALLOWED_HOSTS = ['https://mathview-api.onrender.com/']
 
 
 # Application definition
