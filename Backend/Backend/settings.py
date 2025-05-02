@@ -27,7 +27,7 @@ DEBUG = True
 
 
 #ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-ALLOWED_HOSTS = ['mathview-api.onrender.com']
+ALLOWED_HOSTS = ['*']
 print(f"ALLOWED_HOSTS EN PRODUCCIÓN: {ALLOWED_HOSTS}")
 
 # Application definition
