@@ -27,9 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-#ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-ALLOWED_HOSTS = ['*']
-print(f"ALLOWED_HOSTS EN PRODUCCIÓN: {ALLOWED_HOSTS}")
+# #ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+# ALLOWED_HOSTS = ['*']
+# print(f"ALLOWED_HOSTS EN PRODUCCIÓN: {ALLOWED_HOSTS}")
 
 # Application definition
 
