@@ -12,5 +12,5 @@ Antes de comenzar, asegúrate de tener instalados los siguientes requisitos:
 ## Instalación
 1. Clona el repositorio:
    ```sh
-   git clone https://github.com/tu-usuario/tu-repositorio.git
+   git clone (https://github.com/AlvaroGaertnerGit/MathView-API.git)
    cd tu-repositorio
