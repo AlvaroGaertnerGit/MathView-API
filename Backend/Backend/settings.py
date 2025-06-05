@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,14 +24,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-*j_cmtr=-1--2hvm-9hq83vo#fa87++=5@r^2bm3^fbqit$k)3'
 
+
+# API KEY DE OPEN AI
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
-# #ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-# ALLOWED_HOSTS = ['*']
-# print(f"ALLOWED_HOSTS EN PRODUCCIÓN: {ALLOWED_HOSTS}")
+ALLOWED_HOSTS = [
+    'mathview-api.onrender.com',
+    'mathview-backend.azurewebsites.net',
+    'localhost', '127.0.0.1'
+]
 
 # Application definition
 

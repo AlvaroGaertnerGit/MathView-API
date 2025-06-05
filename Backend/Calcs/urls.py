@@ -8,4 +8,5 @@ urlpatterns = [
     path('calculateFourier/', views.calculateFourier, name='calculateFourier'), 
     path('calculateMandelbrot/', views.calculateMandelbrot, name='calculateMandelbrot'), 
     path('analyzeFunction/', views.analyzeFunction, name='analyze-function'), 
+    path('analizarFuncionGPT/', views.analizarFuncionGPT, name='analyze-function-GPT'), 
 ]

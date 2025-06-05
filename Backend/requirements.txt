@@ -5,3 +5,5 @@ scipy
 drf-yasg
 sympy
 gunicorn
+openai
+python-dotenv

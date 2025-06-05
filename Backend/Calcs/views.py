@@ -23,6 +23,7 @@ from sympy.parsing.sympy_parser import parse_expr
 import numpy as np
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
+from Utils.openAIService import infoFunctionGPT;
 
 @swagger_auto_schema(
     methods=['get'],
@@ -293,3 +294,15 @@ def calculateMandelbrot(request):
         "iterations": iteration.tolist()
     })
 
+@api_view(['GET'])
+def analizarFuncionGPT(request):
+    expresion = request.GET.get('expression')
+    curso = request.GET.get("curso")
+    if not expresion:
+        return Response({'error': 'No se ha proporcionado ninguna expresión'}, status=400)
+    
+    try:
+        info_generada = infoFunctionGPT(expresion, curso)
+        return Response({'expresion': expresion, 'analisis_gpt': info_generada})
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
