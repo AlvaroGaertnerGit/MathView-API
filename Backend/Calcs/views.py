@@ -48,10 +48,11 @@ def calculateFunctionParam(request):
         k = symbols('k', integer=True)
         z = x + I * y
 
-        local_dict = {'pi':pi, '·': '*','I': I,'𝑦': y,'𝑧':z, '𝑥': x,'x': x, 'k': k,'y': y, 'z': z, '𝑒': exp,'exp': exp, 'sIn': sin, 'cos': cos, 'Integral': integrate, 'lI': li,'mobIus': mobius, 'Sum': Sum, 'oo':oo, 'Integer': Integer}
+        local_dict = {'pi':pi, '·': '*','I': I,'𝑦': y,'𝑧':z, '𝑥': x,'x': x, 'k': k,'y': y, 'z': z, 'e': np.e,'𝑒': np.e,'exp': exp, 'sIn': sin, 'cos': cos, 'Integral': integrate, 'lI': li,'mobIus': mobius, 'Sum': Sum, 'oo':oo, 'Integer': Integer}
         input_function = input_function.replace("i", "I")  # Corrige la notación imaginaria
         input_function = input_function.replace("𝜋", "pi")  # Corrige la notación imaginaria
         input_function = input_function.replace("·", "*")  # Corrige la notación imaginaria
+        input_function = input_function.replace("^", "**")  # Corrige la notación imaginaria
         # input_function = input_function.replace("%F0%9D%9C%8B", "𝜋")  # Corrige la notación imaginaria
         # Parseamos la expresión evitando conversiones incorrectas
         # import pdb; pdb.set_trace()
